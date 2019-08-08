@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录页面</title>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/datatable/datatable/datatables.min.css">
+    <link rel="stylesheet" href="../static/datatable/datatable/DataTables-1.10.18/css/dataTables.bootstrap.min.css">
+    <script src="../static/jq/jquery-3.2.1.js"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../static/datatable/datatable/datatables.min.js"></script>
+    <script src="../static/bootbox/bootbox.min.js"></script>
+    <script src="../static/datatime/bootstrap-datetimepicker.min.js"></script>
+    <script src="../static/datatime/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../static/datatable/datatable/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+    <script src="../static/js/md5.js"></script>
+</head>
+<body>
+<form class="form-horizontal" enctype="" >
+    <div class="form-group">
+        <label  class="col-sm-4 control-label">登录账号:</label>
+        <div class="col-sm-4" >
+            <input type="text" class="form-control" id="add_userName" >
+        </div>
+    </div>
+    <div class="form-group">
+        <label  class="col-sm-4 control-label">密码:</label>
+        <div class="col-sm-4" >
+            <input type="password" class="form-control" id="add_userPwd" >
+        </div>
+    </div>
+    <!--<div class="form-group">-->
+        <!--<label  class="col-sm-4 control-label">验证码:</label>-->
+        <!--<div class="col-sm-4" >-->
+            <!--<input type="text" class="form-control" id="imgCode" >-->
+        <!--</div>-->
+        <!--<img  id="code"  align="center"/>-->
+    <!--</div>-->
+</form>
+<div class="form-group" style="text-align: center;">
+    <button type="button" class="btn btn-primary" onclick="login();"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>登录</button>
+    <button type="reset" class="btn btn-info" ><span class="glyphicon glyphicon-repeat" aria-hidden="true"></span>重置</button>
+</div>
+</body>
+<script type="text/javascript">
+    // var code="";
+    // $(function(){
+    //     code=guid();
+    //     getCode();
+    // })
+    // //获取验证码的方法
+    // function getCode(){
+    //     //初始化验证码图片
+    //     $("#code").attr("src","image/captcha?codeKey="+code);
+    // }
+    // //生成uuid
+    // function guid() {
+    //     function S4() {
+    //         return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    //     }
+    //     return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    // }
+    //
+    // //给验证码绑定点击事件
+    // $("#code").click(function(){
+    //     code=guid();
+    //     getCode();
+    // });
+
+    function login(){
+        var userName=$("#add_userName").val();
+        if (userName==null || userName=="") {
+            alert("请输入用户名");
+            return false;
+        }
+
+        var userPwd=$("#add_userPwd").val();
+        if (userPwd==null || userPwd=="") {
+            alert("请输入密码");
+            return false;
+        }
+        //给密码加密
+        userPwd=hex_md5(hex_md5(userPwd));
+        // var imgCode=$("#imgCode").val();
+        // if (imgCode==null || imgCode=="") {
+        //     alert("请输入验证码");
+        //     return false;
+        // }
+        $.ajax({
+            url:"/LoginController/loginUser",
+            type:"post",
+            dataType:"json",
+            data:{
+                userName:userName,
+                userPwd:userPwd
+                // imgCode:imgCode,
+                // code:code
+            },
+            success:function(result){
+                if (result.code==200) {
+                   location.href="/ProductController/product";
+                }else{
+                    alert(result.msg);
+                }
+            }
+        })
+    }
+</script>
+</html>

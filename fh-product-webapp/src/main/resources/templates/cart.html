@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>购物车</title>
+    <link rel="stylesheet" href="../static/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../static/datatable/datatable/datatables.min.css">
+    <link rel="stylesheet" href="../static/fileinput/css/fileinput.min.css">
+    <link rel="stylesheet" href="../static/datatime/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="../static/datatable/datatable/DataTables-1.10.18/css/dataTables.bootstrap.min.css">
+    <script src="../static/jq/jquery-3.2.1.js"></script>
+    <script src="../static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../static/datatable/datatable/datatables.min.js"></script>
+    <script src="../static/bootbox/bootbox.min.js"></script>
+    <script src="../static/datatime/bootstrap-datetimepicker.min.js"></script>
+    <script src="../static/fileinput/js/fileinput.min.js"></script>
+    <script src="../static/fileinput/js/locales/zh.js"></script>
+    <script src="../static/datatime/bootstrap-datetimepicker.zh-CN.js"></script>
+    <script src="../static/datatable/datatable/DataTables-1.10.18/js/dataTables.bootstrap.min.js"></script>
+    <script src="../static/js/dateFormat.js"></script>
+</head>
+<body>
+<div class="panel panel-info">
+    <div class="panel-heading">
+        购物车信息
+    </div>
+    <div class="panel-body">
+        <table id="productloyeeTable" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+            <tr>
+                <th style="width:100px;"><label><input class="check-all check" onclick="checkall()" type="checkbox" /> 全选</label></th>
+                <th><label>商品名称/型号</label></th>
+                <th style="width:200px;"><label>单价</label></th>
+                <th style="width:150px;"><label>数量</label></th>
+                <th style="width:150px;"><label>小计</label></th>
+                <th style="width:100px;"><label>操作</label></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="product:${productList}">
+                <td ><input class="check-one check" type="checkbox" name="productId" th:onclick="'javascript:selectProductNum()'" th:value="${product.productId}"/> </td>
+                <td class="goods">
+                    <label th:text="${product.productName}"></label>
+                </td>
+                <td class="number small-bold-red"><span th:text="${product.productPrice}"></span></td>
+                <td class="input-group">
+                    <span class="input-group-addon minus" th:onclick="'javascript:delNum(this)'">-</span>
+                    <input type="text" class="number form-control input-sm" th:onkeyup="'javascript:cartValue(this)'"  th:value="${product.num}"  />
+                    <span class="input-group-addon plus" th:onclick="'javascript:addNum(this)'">+</span>
+                </td>
+                <td class="subtotal number small-bold-red"><span th:text="${product.productPriceNmu}"></span></td>
+                <td class="operation"><span class="delete btn btn-xs btn-primary" th:onclick="'javascript:delCartProduct(this)'">删除</span></td>
+            </tr>
+            </tbody>
+        </table>
+        <div>
+            <div style="float: left">
+                已选中：<span id="sumAll"></span>件商品
+                <button type="button" class="btn btn-primary" onclick="deleteSelectProduct();">
+                    删除选中商品
+                </button>
+            </div>
+            <div style="float: right">
+                总价为:<span th:text="${allPrice}"></span>
+                <button type="button" class="btn btn-primary">
+                    提交订单
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+    // function selectProductNum(){
+    //     var productIds="";
+    //     $("[name='productId']:checked").each(function(){
+    //         productIds+=","+this.value;
+    //     })
+    //     if (productIds>0){
+    //         $.ajax({
+    //             url:"/ProductController/selectProductNum",
+    //             type:"post",
+    //             data:{
+    //                 productIds:productIds
+    //             },
+    //             success:function () {
+    //                 location.href="/ProductController/queryCart";
+    //             }
+    //         })
+    //     }
+    // }
+
+    function checkall(){
+        var checkarr=$("[name='productId']");
+        $.each(checkarr,function(){
+            $(this).prop("checked",!$(this).prop("checked"));
+        })
+    }
+
+    function deleteSelectProduct() {
+        var productIds="";
+        $("[name='productId']:checked").each(function(){
+            productIds+=","+this.value;
+        })
+        if (productIds.length>0){
+            bootbox.confirm({
+                size:"small",
+                message:"你确定删除选中的商品",
+                buttons:{
+                    confirm:{
+                        label:"删除",
+                        className:"btn-success"
+                    },
+                    cancel:{
+                        label:"取消",
+                        className:"btn-danger"
+                    }
+                },
+                callback:function(result){
+                    if (result) {
+                        $.ajax({
+                            url:"/ProductController/deleteSelectProduct",
+                            type:"post",
+                            data:{
+                                productIds:productIds
+                            },
+                            success:function () {
+                                location.href="/ProductController/queryCart";
+                            }
+                        })
+                    }
+                }
+
+            })
+        } else {
+            alert("请选择要删除的商品");
+        }
+
+    }
+
+    function cartNum(productId,newnum){
+        $.ajax({
+            url:"/ProductController/cartNum",
+            type:"post",
+            data:{
+                productId:productId,
+                num:newnum
+            },
+            success:function () {
+                location.href="/ProductController/queryCart";
+            }
+        })
+
+    }
+
+function addNum(obj) {
+    var oldnum=$(obj).prev("input").val();
+    var newnum=oldnum*1+1;
+    $(obj).prev("input").val(newnum);
+    var productId=$(obj).parent().prevAll("td").children("[name='productId']").val();
+    cartNum(productId,newnum);
+}
+
+function delNum(obj) {
+    var oldnum=$(obj).next("input").val();
+    var newnum=oldnum*1-1;
+    $(obj).next("input").val(newnum);
+    var productId=$(obj).parent().prevAll("td").children("[name='productId']").val();
+    if (newnum>0){
+        cartNum(productId,newnum);
+    }  else {
+        $(obj).next("input").val("1");
+        alert("商品数量不能小于0");
+    }
+}
+
+function cartValue(obj) {
+    var newnum=$(obj).val();
+    var productId=$(obj).parent().prevAll("td").children("[name='productId']").val();
+    if (newnum>0){
+        cartNum(productId,newnum);
+    } else {
+        $(obj).val("1");
+        alert("商品数量不能小于0");
+    }
+}
+
+function delCartProduct(obj) {
+    var productId=$(obj).parent().prevAll("td").children("[name='productId']").val();
+    $.ajax({
+        url:"/ProductController/delCartProduct",
+        type:"post",
+        data:{
+            productId:productId
+        },
+        success:function () {
+            location.href="/ProductController/queryCart";
+        }
+    })
+}
+
+</script>
+</html>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fh.user.dao.user.IUserDao" >
+	<resultMap type="com.fh.user.bean.User" id="BaseResultMap">
+		<id column="userId" property="userId" jdbcType="VARCHAR"/>
+		<result column="userName" property="userName" jdbcType="VARCHAR"/>
+		<result column="userPwd" property="userPwd" jdbcType="VARCHAR"/>
+		<result column="userPhone" property="userPhone" jdbcType="VARCHAR"/>
+		<result column="userEmail" property="userEmail" jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<select id="queryUserByName" parameterType="string" resultMap="BaseResultMap">
+			select userId,userName,userPwd,userPhone,userEmail
+			  from t_fh_user
+			  where userName=#{userName,jdbcType=VARCHAR}
+		</select>
+
+	<!--<insert id="adduser"  parameterType="com.fh.user.bean.User" >-->
+		<!--<selectKey keyProperty="id" resultType="String" order="BEFORE">-->
+			<!--select replace(UUID(),'-','') from dual-->
+		<!--</selectKey>-->
+		<!--insert into t_user (id,username,userpwd,phone,status,loginCount,loginErrorCount)-->
+		<!--values (#{id,jdbcType=VARCHAR},#{username,jdbcType=VARCHAR},-->
+		<!--#{userpwd,jdbcType=VARCHAR},#{phone,jdbcType=VARCHAR},'0','0','0',)-->
+	<!--</insert>-->
+
+
+	<!--<select id="queryCount" parameterType="com.fh.order.bean.Order" resultType="long">-->
+			<!--select count(c_id) from t_order_goods-->
+		<!--</select>-->
+
+	<!--<select id="queryPageOrderList" parameterType="java.util.Map" resultMap="BaseResultMap">-->
+			<!--select o.c_id,o.c_num,o.c_productname,o.c_status,o.d_date,o.c_imgurl,s.c_name-->
+			<!--from t_order_goods o left join t_status s on o.c_status=s.c_id-->
+			 <!--limit #{page.startIndax},#{page.pagesize}-->
+			<!--</select>-->
+
+	<!--<select id="queryStatusList" resultMap="BaseResultMapOne">-->
+			<!--select c_id,c_name-->
+			<!--from  t_status-->
+			<!--</select>-->
+
+
+
+
+	<!--<delete id="delOrderById" parameterType="String">-->
+ 			    <!--delete from t_order_goods where c_id=#{id,jdbcType=VARCHAR}-->
+ 			<!--</delete>-->
+
+	<!--<select id="queryOrderById" parameterType="string" resultMap="BaseResultMap">-->
+ 			<!--select o.c_num,o.c_productname,o.c_status,o.d_date,o.c_imgurl,s.c_name-->
+			<!--from t_order_goods o left join t_status s on o.c_status=s.c_id-->
+ 			  <!--where o.c_id=#{id,jdbcType=VARCHAR}-->
+ 		<!--</select>-->
+
+		 <!--<update id="updateOrder" parameterType="com.fh.order.bean.Order">-->
+ 			<!--update t_order_goods set-->
+ 			 <!--c_num=#{num,jdbcType=VARCHAR},-->
+ 			 <!--c_productname=#{productname,jdbcType=VARCHAR},-->
+	         <!--c_status=#{status,jdbcType=VARCHAR},-->
+	         <!--d_date=#{showtime,jdbcType=DATE},-->
+			 <!--c_imgurl=#{imgurl,jdbcType=VARCHAR}-->
+ 			 <!--where c_id= #{id,jdbcType=VARCHAR}-->
+ 		<!--</update>-->
+		<!---->
+
+			
+
+		
+<!-- 		<select id="queryUserByLoginid" parameterType="string" resultMap="BaseResultMap"> -->
+<!-- 			 select * from t_fh_user where c_loginid=#{loginid,jdbcType=VARCHAR} and n_valid=1  -->
+<!-- 		</select> -->
+		
+<!-- 		<update id="updateUserLock" parameterType="java.lang.String"> -->
+<!-- 			update t_fh_user set  -->
+<!-- 			status=1 -->
+<!-- 			where c_id = #{id,jdbcType=VARCHAR} -->
+<!-- 		</update> -->
+		
+<!-- 		<update id="updateErrorCount" parameterType="java.lang.String"> -->
+<!-- 			update t_fh_user set  -->
+<!-- 			loginErrorCount=loginErrorCount+1 -->
+<!-- 			where c_id = #{id,jdbcType=VARCHAR} -->
+<!-- 		</update> -->
+		
+<!-- 		<update id="updateErrorCountone" parameterType="java.lang.String"> -->
+<!-- 			update t_fh_user set  -->
+<!-- 			loginErrorCount=0 -->
+<!-- 			where c_id = #{id,jdbcType=VARCHAR} -->
+<!-- 		</update> -->
+		
+<!-- 		<update id="updateResetUser" > -->
+<!-- 			update t_fh_user set  -->
+<!-- 			loginErrorCount=0, -->
+<!-- 			status=0 -->
+<!-- 		</update> -->
+
+<!-- 	  <select id="queryDeptAndEmp"  resultType="java.util.HashMap"> -->
+<!-- 		  select d.deptName,count(e.id) count from t_dept d LEFT JOIN t_emp e -->
+<!-- 		   ON e.deptId=d.id -->
+<!-- 		    GROUP BY d.deptName -->
+<!-- 		  </select>  -->
+	
+	
+
+<!-- 	<select id="findAllEmp" parameterType="com.fh.bean.emp.EmpBean" resultMap="BaseResultMap"> -->
+<!-- 			select e.id,e.empName,e.sex,e.birthday,e.salary,e.deptId,d.deptName -->
+<!-- 			 from t_emp e left join t_dept d on e.deptId=d.id -->
+<!-- 			 where 1=1 -->
+<!-- 			 <if test="empName !=null and empName!=''"> -->
+<!-- 			 	and e.empName  like "%"#{empName}"%"  -->
+<!-- 			 </if> -->
+<!-- 			 <if test="minSalary !=null and minSalary!=''"> -->
+<!-- 			 	and e.salary  &gt;=#{minSalary}  -->
+<!-- 			 </if> -->
+<!-- 			 <if test="maxSalary !=null and maxSalary!=''"> -->
+<!-- 			 	and e.salary  &lt;=#{maxSalary} -->
+<!-- 			 </if> -->
+<!-- 			 <if test="minBirthday !=null and minBirthday!=''"> -->
+<!-- 			 	and e.birthday  &gt;=#{minBirthday} -->
+<!-- 			 </if> -->
+<!-- 			 <if test="maxBirthday !=null and maxBirthday!=''"> -->
+<!-- 			 	and e.birthday  &lt;=#{maxBirthday} -->
+<!-- 			 </if> -->
+<!-- 		</select> -->
+	
+		
+		
+		
+		
+		
+		
+		
+<!-- 	<select id="queryAllDept" resultMap="BaseResultMap"> -->
+<!-- 		select id,pid,deptName,description from t_dept -->
+<!-- 	</select> -->
+		
+		
+	
+<!-- 	<resultMap type="com.fh.bean.Type" id="TypeBaseResultMap"> -->
+<!-- 		<id column="c_id" property="id" jdbcType="Integer"/> -->
+<!-- 		<id column="c_tname" property="tname" jdbcType="VARCHAR"/> -->
+<!-- 	</resultMap> -->
+	
+	
+<!-- 		<select id="queryType"  resultType="com.fh.bean.Type"> -->
+<!-- 			select c_id id,c_tname tname from t_type -->
+<!-- 		</select> -->
+		
+		
+
+		
+		
+		
+		
+	
+</mapper>
