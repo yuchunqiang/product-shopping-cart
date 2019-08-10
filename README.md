@@ -1,5 +1,6 @@
 # product-shopping-cart
 springboot + springcloud项目：分布式，一个简单的购物车项目，使用到mongodb的，MySQL和redis的（redistemplate），RabbitMQ的。
+先启动eureka注册中心，让其余服务可以在后续启动时可以找到注册中心，并且将服务注册上去，webapp是作为消费者一段进行访问
 
 ## springCloud
 项目中通过该springCloud中的注册中心Eureka来管理各个服务，让各个服务之间都可以通过Eureka来进行调用
